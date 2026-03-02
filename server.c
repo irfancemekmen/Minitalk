@@ -6,21 +6,22 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:25 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/02 22:22:42 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/03 02:26:20 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+#include <unistd.h>
+#include <signal.h>
 
-void	mt_handle(int sig, siginfo_t *info, void *context)
+static void	mt_handle(int sig, siginfo_t *info, void *context)
 {
 	static int	bit = 128;
 	static char	c = 0;
 
 	(void)context;
-	(void)info;
 	if (sig == SIGUSR1)
-		c = c + bit;
+		c = c | bit;
 	bit = bit / 2;
 	if (bit == 0)
 	{
@@ -28,6 +29,7 @@ void	mt_handle(int sig, siginfo_t *info, void *context)
 		bit = 128;
 		c = 0;
 	}
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
