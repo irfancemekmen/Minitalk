@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iekmen <iekmen@student.42kocaeli.com.tr>   +#+  +:+       +#+        */
+/*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:37 by iekmen            #+#    #+#             */
-/*   Updated: 2025/01/20 12:36:17 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/02 22:23:47 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	ft_sendbit(int pid, char c)
+void	mt_sendbit(int pid, char c)
 {
 	int	bit;
 
@@ -30,6 +30,7 @@ void	ft_sendbit(int pid, char c)
 
 int	main(int argc, char **argv)
 {
+	struct sigaction	sa;
 	int	pid;
 	int	i;
 
@@ -46,7 +47,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	while (argv[2][i])
-		ft_sendbit(pid, (argv[2][i++]));
-	ft_sendbit(pid, '\n');
+		mt_sendbit(pid, (argv[2][i++]));
+	mt_sendbit(pid, '\n');
 	return (0);
 }

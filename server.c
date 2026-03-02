@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iekmen <iekmen@student.42kocaeli.com.tr>   +#+  +:+       +#+        */
+/*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:25 by iekmen            #+#    #+#             */
-/*   Updated: 2025/01/20 15:06:41 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/02 22:22:42 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	ft_handle(int sig)
+void	mt_handle(int sig, siginfo_t *info, void *context)
 {
 	static int	bit = 128;
 	static char	c = 0;
 
+	(void)context;
+	(void)info;
 	if (sig == SIGUSR1)
 		c = c + bit;
 	bit = bit / 2;
@@ -30,11 +32,16 @@ void	ft_handle(int sig)
 
 int	main(void)
 {
+	struct sigaction	sa;
+
 	write(1, "Server PID: ", 12);
-	ft_putnbr(getpid());
+	mt_putnbr(getpid());
 	write(1, "\n", 1);
-	signal(SIGUSR1, ft_handle);
-	signal(SIGUSR2, ft_handle);
+	sa.sa_sigaction = mt_handle;
+	sa.sa_flags = SA_SIGINFO;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 		pause();
 }
