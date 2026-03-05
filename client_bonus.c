@@ -6,7 +6,7 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 00:03:44 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/06 01:43:41 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/06 02:07:16 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ static void	mt_sendbit(int pid, char c)
 static void	mt_ack(int sig)
 {
 	if (sig == SIGUSR2)
-	{
-		write(1, "ACK\n", 4);
-	}
+		write(1, "Message received\n", 17);
 	g_ack = 1;
 }
 
@@ -47,6 +45,7 @@ static void	mt_init_signal(void)
 {
 	struct sigaction	sa;
 
+	mt_memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = mt_ack;
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
@@ -74,6 +73,6 @@ int	main(int ac, char **av)
 	i = 0;
 	while (av[2][i])
 		mt_sendbit(pid, (av[2][i++]));
-	mt_sendbit(pid, '\n');
+	mt_sendbit(pid, '\0');
 	return (0);
 }

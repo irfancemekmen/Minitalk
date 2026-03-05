@@ -6,7 +6,7 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:21 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/02 22:21:05 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/06 01:56:12 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,19 @@ void	mt_putnbr(int nbr)
 		mt_putnbr(nbr / 10);
 	c = nbr % 10 + 48;
 	write(1, &c, 1);
+}
+
+void	*mt_memset(void *s, int c, size_t n)
+{
+	size_t			i;
+	unsigned char	*tmp;
+
+	i = 0;
+	tmp = (unsigned char *)s;
+	while (i < n)
+	{
+		tmp[i] = c;
+		i++;
+	}
+	return (s);
 }

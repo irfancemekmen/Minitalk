@@ -6,7 +6,7 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:37 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/06 01:50:47 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/06 01:57:50 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-int	g_ack = 0;
+volatile sig_atomic_t	g_ack = 0;
 
 static void	mt_sendbit(int pid, char c)
 {
@@ -45,6 +45,7 @@ static void	mt_init_signal(void)
 {
 	struct sigaction	sa;
 
+	mt_memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = mt_ack;
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
@@ -72,6 +73,6 @@ int	main(int ac, char **av)
 	i = 0;
 	while (av[2][i])
 		mt_sendbit(pid, (av[2][i++]));
-	mt_sendbit(pid, '\n');
+	mt_sendbit(pid, '\0');
 	return (0);
 }
