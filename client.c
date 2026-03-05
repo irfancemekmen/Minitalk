@@ -6,7 +6,7 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:37 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/03 02:26:05 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/06 01:50:47 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-volatile sig_atomic_t	g_ack = 0;
+int	g_ack = 0;
 
 static void	mt_sendbit(int pid, char c)
 {
@@ -36,7 +36,8 @@ static void	mt_sendbit(int pid, char c)
 
 static void	mt_ack(int sig)
 {
-	(void)sig;
+	if (sig == SIGUSR2)
+		write(1, "Message received\n", 17);
 	g_ack = 1;
 }
 
@@ -48,21 +49,7 @@ static void	mt_init_signal(void)
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGUSR1, &sa, NULL);
-}
-
-static int	mt_validate_pid(int pid)
-{
-	if (pid <= 0)
-	{
-		write(1, "Check PID!\n", 12);
-		return (0);
-	}
-	if (kill(pid, 0) == -1)
-	{
-		write(1, "Invalid PID!\n", 14);
-		return (0);
-	}
-	return (1);
+	sigaction(SIGUSR2, &sa, NULL);
 }
 
 int	main(int ac, char **av)
@@ -77,12 +64,14 @@ int	main(int ac, char **av)
 	}
 	mt_init_signal();
 	pid = mt_atoi(av[1]);
-	if (!mt_validate_pid(pid))
+	if (pid <= 0)
+	{
+		write(1, "Check PID!\n", 12);
 		return (1);
+	}
 	i = 0;
 	while (av[2][i])
 		mt_sendbit(pid, (av[2][i++]));
 	mt_sendbit(pid, '\n');
 	return (0);
 }
-

@@ -6,7 +6,7 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:40:25 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/03 02:26:20 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/06 01:43:05 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ static void	mt_handle(int sig, siginfo_t *info, void *context)
 	bit = bit / 2;
 	if (bit == 0)
 	{
+		if (c == '\n')
+			kill(info->si_pid, SIGUSR2);
 		write(1, &c, 1);
 		bit = 128;
 		c = 0;

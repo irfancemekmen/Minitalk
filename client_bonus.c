@@ -6,7 +6,7 @@
 /*   By: iekmen <iekmen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 00:03:44 by iekmen            #+#    #+#             */
-/*   Updated: 2026/03/06 00:03:45 by iekmen           ###   ########.fr       */
+/*   Updated: 2026/03/06 01:43:41 by iekmen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ static void	mt_sendbit(int pid, char c)
 
 static void	mt_ack(int sig)
 {
-	(void)sig;
+	if (sig == SIGUSR2)
+	{
+		write(1, "ACK\n", 4);
+	}
 	g_ack = 1;
 }
 
@@ -48,21 +51,7 @@ static void	mt_init_signal(void)
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGUSR1, &sa, NULL);
-}
-
-static int	mt_validate_pid(int pid)
-{
-	if (pid <= 0)
-	{
-		write(1, "Check PID!\n", 12);
-		return (0);
-	}
-	if (kill(pid, 0) == -1)
-	{
-		write(1, "Invalid PID!\n", 14);
-		return (0);
-	}
-	return (1);
+	sigaction(SIGUSR2, &sa, NULL);
 }
 
 int	main(int ac, char **av)
@@ -77,8 +66,11 @@ int	main(int ac, char **av)
 	}
 	mt_init_signal();
 	pid = mt_atoi(av[1]);
-	if (!mt_validate_pid(pid))
+	if (pid <= 0)
+	{
+		write(1, "Check PID!\n", 12);
 		return (1);
+	}
 	i = 0;
 	while (av[2][i])
 		mt_sendbit(pid, (av[2][i++]));

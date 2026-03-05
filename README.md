@@ -36,10 +36,22 @@ Bu proje sayesinde aşağıdaki konular öğrenilir:
 
 Projeyi klonladıktan sonra aşağıdaki komut ile derleyebilirsiniz:
 
+- İlk olarak sunucuyu çalıştırın. Sunucu başladığında size özel bir İşlem Kimliği (PID) verecektir.
+- Başka bir terminal penceresinde, sunucudan aldığınız PID numarasını ve göndermek istediğiniz mesajı kullanarak istemciyi çalıştırınız.
+
 ```bash
 git clone <repo-url>
 cd minitalk
 make
+./server
+./client <PID> "Gönderilecek Mesaj"
+```
+
+- Bonus için :
+```bash
+make bonus
+./server_bonus
+./client_bonus <PID> "Gönderilecek Mesaj";
 ```
 ## RESOURCES
 
